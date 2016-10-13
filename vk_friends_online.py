@@ -17,23 +17,27 @@ def get_online_friends(login, password):
         app_id=APP_ID,
         user_login=login,
         user_password=password,
+        scope='friends'
     )
     api = vk.API(session)
-    print(api)
-    # например, api.friends.get()
+    friends_online_id = api.friends.getOnline()
+    friends_online_id_str = ','.join([str(i) for i in friends_online_id])
+    friends_online = api.users.get(
+        user_ids=friends_online_id_str,
+        fields='first_name, last_name'
+    )
+
+    return friends_online
 
 
 def output_friends_to_console(friends_online):
-    pass
+    for friend in friends_online:
+        print(friend['first_name'], friend['last_name'])
 
 if __name__ == '__main__':
 
     login = get_user_login()
     password = get_user_password()
-
-    login = '375297722502'
-    password = '754816f6280dd1f97bb22c8925d662a3'
-
 
     friends_online = get_online_friends(login, password)
     output_friends_to_console(friends_online)
